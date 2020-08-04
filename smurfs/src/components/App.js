@@ -14,9 +14,11 @@ class App extends Component {
         <button className='fetch-smurfs' onClick={() => this.props.fetchSmurfsData()}>Fetch Smurf Data</button>
         {this.props.error.length > 0 ? <p>{this.props.error}</p> : ''}
         <AddSmurf />
-        {this.props.smurfs.map(smurf => {
-          return <SmurfForm smurf={smurf} key={smurf.id}/>
-        })}
+        <div className='smurf-data'>
+          {this.props.smurfs.map(smurf => {
+            return <SmurfForm smurf={smurf} key={smurf.id}/>
+          })}
+        </div>
       </div>
     );
   }

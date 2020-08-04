@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 
 import { connect } from 'react-redux';
-import { addSmurf } from '../actions/index';
-
 import axios from 'axios';
+
 
 const AddSmurf = props => {
     const [smurfForm, setSmurfForm] = useState({
@@ -12,17 +11,23 @@ const AddSmurf = props => {
         height: '',
         id: Date.now()
     })
-    const [post, setPost] = useState([]);
+const [error, setError] = useState('');
 
-    const handleChange = e => {
-        setSmurfForm({
+    let handleChange = e => {
+        setSmurfForm({ 
             ...smurfForm,
-            [e.target.name]: e.target.value
-        })
+            [e.target.name]: e.target.value })
     }
-    const handleSubmit = e => {
+    let handleSubmit = e => {
         e.preventDefault();
-        addSmurf(smurfForm);
+        axios.post('http://localhst:3333/smurfs', smurfForm)
+        .then(res => {
+            console.log('response: ', res);
+            console.log('res.data: ', res.data);
+        })
+        .catch(err => {
+            setError(err.message)
+        })
         setSmurfForm({
             name: '',
             age: '',
@@ -30,11 +35,11 @@ const AddSmurf = props => {
             id: Date.now()
         })
     }
-
     return (
-        <form onSubmit={handleSubmit}>
+        <form>
             <label htmlFor='name'>
                 <input
+                className='input'
                 id='name'
                 type='text'
                 name='name'
@@ -45,6 +50,8 @@ const AddSmurf = props => {
                 </label>
             <label htmlFor='age'>
                 <input
+                className='input'
+                id='age'
                 type='text'
                 name='age'
                 value={smurfForm.age}
@@ -54,6 +61,8 @@ const AddSmurf = props => {
             </label>
             <label htmlFor='height'>
                 <input
+                className='input'
+                id='height'
                 type='text'
                 name='height'
                 value={smurfForm.height}
@@ -61,8 +70,8 @@ const AddSmurf = props => {
                 onChange={handleChange}
                  />
             </label>
-            <button className='add-smurf' >Add Smurf</button>
-            <pre>{JSON.stringify(post, null, 2)}</pre>
+            <p className='error'>{error}</p>
+            <button className='add-smurf' onClick={handleSubmit}>Add Smurf</button>
         </form>
     )
 }
@@ -76,6 +85,6 @@ const mapStateToProps = state => {
 export default connect(
     mapStateToProps,
     {
-        addSmurf
+    
     }
 )(AddSmurf);
